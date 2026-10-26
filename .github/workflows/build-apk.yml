@@ -1,6 +1,8 @@
 name: Build Android APK
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,3 +33,9 @@ jobs:
         with:
           name: katos-garage-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Kato's Garage APK ${{ github.run_number }}
+          files: android/app/build/outputs/apk/debug/app-debug.apk
