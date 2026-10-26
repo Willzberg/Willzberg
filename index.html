@@ -49,15 +49,12 @@ function hideNative(){
 }
 /* start the hop and spin only after the native splash is gone, so the animation is never hidden under it */
 function start(){if(started)return;started=1;t0=Date.now();h.classList.add('kk-go')}
-/* wait until the orange page splash has really been painted, then remove the native one (they look identical, so nothing moves) */
+/* start the logo animation immediately, at the very first paint, and drop the plain-orange native splash as early as possible */
 function begin(){
   var n=0;
-  (function t(){
-    if(hideNative()||!window.Capacitor||n>=60){start()}
-    else{n++;setTimeout(t,50)}
-  })();
+  (function t(){if(!hideNative()&&window.Capacitor&&n<250){n++;setTimeout(t,16)}})();
 }
-requestAnimationFrame(function(){requestAnimationFrame(begin)});
+start();begin();
 /* safety: never leave the splash waiting */
 setTimeout(function(){hideNative();start()},4000);
 /* ---- reveal ---- */
