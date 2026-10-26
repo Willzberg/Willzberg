@@ -25,7 +25,7 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/splash-screen sharp
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
-          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#ff5a1f';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'},SplashScreen:{launchAutoHide:false,launchShowDuration:0,backgroundColor:'#ff5a1f',showSpinner:false}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#ff5a1f';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'},SplashScreen:{launchAutoHide:false,launchShowDuration:6000,launchFadeOutDuration:0,backgroundColor:'#ff5a1f',showSpinner:false}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           cat > android/app/src/main/res/values/styles.xml <<'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
