@@ -42,6 +42,7 @@ jobs:
             </style>
             <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
               <item name="windowSplashScreenBackground">#ff5a1f</item>
+              <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
               <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
               <item name="android:statusBarColor">#0b1220</item>
               <item name="android:navigationBarColor">#0b1220</item>
