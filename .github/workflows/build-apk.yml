@@ -38,7 +38,7 @@ jobs:
                 for (const f of fs.readdirSync(dir)) {
                   if (f.startsWith(n + '.')) fs.unlinkSync(dir + '/' + f);
                 }
-                await sharp('icons/app-icon.png').resize(px, px).png().toFile(dir + '/' + n + '.png');
+                await sharp('icons/app-icon.png').trim({threshold:10}).resize(Math.round(px*0.8),Math.round(px*0.8),{fit:'contain',background:'#fffdf9'}).extend({top:Math.round(px*0.1),bottom:Math.round(px*0.1),left:Math.round(px*0.1),right:Math.round(px*0.1),background:'#fffdf9'}).resize(px,px).png().toFile(dir + '/' + n + '.png');
               }
             }
             fs.rmSync('android/app/src/main/res/mipmap-anydpi-v26', { recursive: true, force: true });
