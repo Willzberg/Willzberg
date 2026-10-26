@@ -38,7 +38,7 @@ jobs:
                 for (const f of fs.readdirSync(dir)) {
                   if (f.startsWith(n + '.')) fs.unlinkSync(dir + '/' + f);
                 }
-                await sharp('icons/icon-512.png').resize(px, px).png().toFile(dir + '/' + n + '.png');
+                await sharp('icons/app-icon.png').resize(px, px).png().toFile(dir + '/' + n + '.png');
               }
             }
             fs.rmSync('android/app/src/main/res/mipmap-anydpi-v26', { recursive: true, force: true });
