@@ -25,6 +25,7 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
+          sed -i 's/Theme.AppCompat.DayNight.NoActionBar/Theme.AppCompat.NoActionBar/g' android/app/src/main/res/values/styles.xml
           mkdir resources
           cp "$(ls -S icons/*.png | head -1)" resources/icon-only.png
           npm install @capacitor/assets
