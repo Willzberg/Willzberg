@@ -25,14 +25,14 @@ jobs:
                     npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/splash-screen sharp
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
-                    node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#faf8fe';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'},SplashScreen:{launchAutoHide:false}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+                    node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#ff5a1f';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'},SplashScreen:{launchAutoHide:false}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           cat > android/app/src/main/res/values/styles.xml <<'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
             <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
               <item name="android:statusBarColor">#0b1220</item>
               <item name="android:navigationBarColor">#0b1220</item>
-              <item name="android:windowBackground">#faf8fe</item>
+              <item name="android:windowBackground">#ff5a1f</item>
               <item name="android:windowLightStatusBar">false</item>
               <item name="android:windowLightNavigationBar">false</item>
             </style>
@@ -41,7 +41,7 @@ jobs:
               <item name="windowNoTitle">true</item>
             </style>
             <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-              <item name="windowSplashScreenBackground">#faf8fe</item>
+              <item name="windowSplashScreenBackground">#ff5a1f</item>
               <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
               <item name="android:statusBarColor">#0b1220</item>
               <item name="android:navigationBarColor">#0b1220</item>
