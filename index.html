@@ -14,9 +14,9 @@ html.kk-js body{transition:opacity .35s ease}
 html.kk-pre body{opacity:0}
 html.kk-pre::after{content:none}
 #kk-splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;background:#ff5a1f;display:flex;align-items:center;justify-content:center;transition:opacity .35s ease}
-#kk-splash svg{width:134.4px;height:134.4px;display:block;opacity:0}
-html.kk-go #kk-splash svg{animation:kkhop .75s cubic-bezier(.3,.7,.4,1) 1 both}
-@keyframes kkhop{0%{opacity:0;transform:translateY(36px) scale(.75)}35%{opacity:1;transform:translateY(-20px) scale(1.06)}68%{opacity:1;transform:translateY(0) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+#kk-splash svg{width:134.4px;height:134.4px;display:block}
+html.kk-go #kk-splash svg{animation:kkhop .7s cubic-bezier(.3,.7,.4,1) 1}
+@keyframes kkhop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-24px) scale(1.06)}68%{transform:translateY(0) scale(.97)}100%{transform:translateY(0) scale(1)}}
 #kk-splash #kk-tyre{transform-box:fill-box;transform-origin:center}
 html.kk-go #kk-splash #kk-tyre{animation:kktyre 2s cubic-bezier(.05,.55,.2,1) 1 both}
 #kk-splash.kk-stop #kk-tyre{animation:none}
@@ -49,12 +49,12 @@ function hideNative(){
 }
 /* start the hop and spin only after the native splash is gone, so the animation is never hidden under it */
 function start(){if(started)return;started=1;t0=Date.now();h.classList.add('kk-go')}
-/* start the logo animation immediately, at the very first paint, and drop the plain-orange native splash as early as possible */
+/* the native splash already shows the same logo, so the moment this page has painted its own copy, drop the native one and start the hop */
 function begin(){
   var n=0;
-  (function t(){if(!hideNative()&&window.Capacitor&&n<250){n++;setTimeout(t,16)}})();
+  (function t(){if(hideNative()||!window.Capacitor||n>=250){start()}else{n++;setTimeout(t,16)}})();
 }
-start();begin();
+requestAnimationFrame(function(){requestAnimationFrame(begin)});
 /* safety: never leave the splash waiting */
 setTimeout(function(){hideNative();start()},4000);
 /* ---- reveal ---- */
