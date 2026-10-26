@@ -1,6 +1,8 @@
 name: Build Android APK
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,9 +22,49 @@ jobs:
       - name: Create Android project
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android sharp
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
+          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'}});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+          cat > android/app/src/main/res/values/styles.xml <<'STYLES'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+            <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+              <item name="android:statusBarColor">#0b1220</item>
+              <item name="android:navigationBarColor">#0b1220</item>
+              <item name="android:windowBackground">#0b1220</item>
+            </style>
+            <style name="AppTheme.NoActionBar" parent="AppTheme">
+              <item name="windowActionBar">false</item>
+              <item name="windowNoTitle">true</item>
+            </style>
+            <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+              <item name="windowSplashScreenBackground">#0b1220</item>
+              <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+              <item name="android:statusBarColor">#0b1220</item>
+              <item name="android:navigationBarColor">#0b1220</item>
+            </style>
+          </resources>
+          STYLES
+          cat > make-icons.js <<'EOF'
+          const sharp = require('sharp');
+          const fs = require('fs');
+          const sizes = { mdpi: 108, hdpi: 162, xhdpi: 216, xxhdpi: 324, xxxhdpi: 432 };
+          (async () => {
+            const trimmed = await sharp('icons/app-icon.png').trim({ threshold: 10 }).toBuffer();
+            for (const [k, px] of Object.entries(sizes)) {
+              const dir = 'android/app/src/main/res/mipmap-' + k;
+              const inner = Math.round(px * 0.68);
+              const fg = await sharp(trimmed).resize(inner, inner, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
+              await sharp({ create: { width: px, height: px, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+                .composite([{ input: fg, gravity: 'centre' }])
+                .png()
+                .toFile(dir + '/ic_launcher_foreground.png');
+            }
+            fs.writeFileSync('android/app/src/main/res/values/ic_launcher_background.xml', '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#FFFDF9</color></resources>');
+          })();
+          EOF
+          node make-icons.js
           npx cap sync android
       - name: Build APK
         working-directory: android
@@ -31,3 +73,9 @@ jobs:
         with:
           name: katos-garage-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Kato's Garage APK ${{ github.run_number }}
+          files: android/app/build/outputs/apk/debug/app-debug.apk
