@@ -35,7 +35,7 @@ jobs:
             const trimmed = await sharp('icons/app-icon.png').trim({ threshold: 10 }).toBuffer();
             for (const [k, px] of Object.entries(sizes)) {
               const dir = 'android/app/src/main/res/mipmap-' + k;
-              const inner = Math.round(px * 0.58);
+              const inner = Math.round(px * 0.68);
               const fg = await sharp(trimmed).resize(inner, inner, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
               await sharp({ create: { width: px, height: px, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
                 .composite([{ input: fg, gravity: 'centre' }])
