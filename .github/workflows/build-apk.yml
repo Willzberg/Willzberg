@@ -68,7 +68,7 @@ jobs:
             for (const [k, px] of Object.entries(splashSizes)) {
               const dir = 'android/app/src/main/res/drawable-' + k;
               fs.mkdirSync(dir, { recursive: true });
-              const inner = Math.round(px * 0.6);
+              const inner = Math.round(px * 0.7);
               const logo = await sharp('splash/splash-logo.png').resize(inner, inner).toBuffer();
               await sharp({ create: { width: px, height: px, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
                 .composite([{ input: logo, gravity: 'centre' }])
