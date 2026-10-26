@@ -10,14 +10,15 @@
 /* Smooth open: hold the page on the brand colour until fonts, hero image and layout are ready, then fade in once */
 html.kk-pre,html.kk-fade{background:#ff5a1f}
 html.kk-pre{overflow:hidden}
-html.kk-js body{transition:opacity .6s ease}
+html.kk-js body{transition:opacity .35s ease}
 html.kk-pre body{opacity:0}
 html.kk-pre::after{content:none}
-#kk-splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;background:#ff5a1f;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease}
-#kk-splash svg{width:134.4px;height:134.4px;display:block;transition:transform .6s ease;animation:kkhop .7s cubic-bezier(.3,.7,.4,1) .25s backwards}
-html.kk-fade #kk-splash svg{transform:scale(.9)}
+#kk-splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;background:#ff5a1f;display:flex;align-items:center;justify-content:center;transition:opacity .35s ease}
+#kk-splash svg{width:134.4px;height:134.4px;display:block}
+html.kk-go #kk-splash svg{animation:kkhop .7s cubic-bezier(.3,.7,.4,1) 1}
 @keyframes kkhop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-22px) scale(1.06)}65%{transform:translateY(0) scale(.97)}100%{transform:translateY(0) scale(1)}}
-#kk-splash #kk-tyre{transform-box:fill-box;transform-origin:center;animation:kktyre 2s cubic-bezier(.05,.55,.2,1) 1 both}
+#kk-splash #kk-tyre{transform-box:fill-box;transform-origin:center}
+html.kk-go #kk-splash #kk-tyre{animation:kktyre 2s cubic-bezier(.05,.55,.2,1) 1 both}
 #kk-splash.kk-stop #kk-tyre{animation:none}
 html.kk-fade #kk-splash{opacity:0;pointer-events:none}
 @keyframes kktyre{from{transform:rotate(0)}to{transform:rotate(2520deg)}}
@@ -39,23 +40,37 @@ h.classList.add('kk-js','kk-pre');
 var sp=d.createElement('div');sp.id='kk-splash';
 sp.innerHTML='<svg viewBox="0 0 320 320" aria-hidden="true"><circle cx="160" cy="160" r="160" fill="#fffef8"/><path fill="#0d1b2c" d="M65 136L160 77L255 136V160H252L160 103L68 160H65Z"/><rect x="65" y="160" width="25" height="79" fill="#0d1b2c"/><rect x="230" y="160" width="25" height="79" fill="#0d1b2c"/><g id="kk-tyre"><circle cx="160" cy="205" r="38" fill="#0d1b2c"/><circle cx="160" cy="205" r="29.5" fill="#eb5d2c"/><circle cx="160" cy="205" r="22" fill="none" stroke="#0d1b2c" stroke-width="1"/><circle cx="160" cy="205" r="5.7" fill="#0d1b2c"/><g fill="#fffef8"><circle cx="160" cy="194" r="2"/><circle cx="170.5" cy="201.6" r="2"/><circle cx="166.5" cy="214" r="2"/><circle cx="153.5" cy="214" r="2"/><circle cx="149.5" cy="201.6" r="2"/></g></g></svg>';
 h.appendChild(sp);
-var hid=0;
+var hid=0,started=0;
 function hideNative(){
-  if(hid)return;
+  if(hid)return 1;
   try{var P=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.SplashScreen;
-    if(P&&P.hide){P.hide({fadeOutDuration:150});hid=1}}catch(e){}
+    if(P&&P.hide){P.hide({fadeOutDuration:0});hid=1}}catch(e){}
+  return hid;
 }
-/* the plugin may not be registered yet when this runs, so keep trying every 50ms for up to 4s */
-(function tryHide(n){hideNative();if(!hid&&n<80)setTimeout(function(){tryHide(n+1)},50)})(0);
+/* start the hop and spin only after the native splash is gone, so the animation is never hidden under it */
+function start(){if(started)return;started=1;t0=Date.now();h.classList.add('kk-go')}
+/* wait until the orange page splash has really been painted, then remove the native one (they look identical, so nothing moves) */
+function begin(){
+  var n=0;
+  (function t(){
+    if(hideNative()||!window.Capacitor||n>=60){start()}
+    else{n++;setTimeout(t,50)}
+  })();
+}
+requestAnimationFrame(function(){requestAnimationFrame(begin)});
+/* safety: never leave the splash waiting */
+setTimeout(function(){hideNative();start()},4000);
 /* ---- reveal ---- */
 function show(){
-  if(shown)return;shown=1;
+  if(shown)return;
+  if(!started){setTimeout(show,40);return}
+  shown=1;
   var tyre=d.getElementById('kk-tyre');
   function go(){
     requestAnimationFrame(function(){requestAnimationFrame(function(){
       h.classList.add('kk-fade');h.classList.remove('kk-pre');
       window.dispatchEvent(new Event('kk-ready'));
-      setTimeout(function(){h.classList.remove('kk-fade');if(sp.parentNode)sp.parentNode.removeChild(sp)},800);
+      setTimeout(function(){h.classList.remove('kk-fade');if(sp.parentNode)sp.parentNode.removeChild(sp)},500);
     })});
   }
   if(!tyre){go();return}
