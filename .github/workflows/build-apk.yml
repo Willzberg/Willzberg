@@ -18,7 +18,7 @@ jobs:
       - name: Prepare web files
         run: |
           mkdir www
-          cp -r index.html manifest.webmanifest sw.js icons images assets www/
+          cp -r index.html manifest.webmanifest sw.js icons images assets splash www/
       - name: Create Android project
         run: |
           npm init -y
@@ -68,7 +68,12 @@ jobs:
             for (const [k, px] of Object.entries(splashSizes)) {
               const dir = 'android/app/src/main/res/drawable-' + k;
               fs.mkdirSync(dir, { recursive: true });
-              await sharp('splash/splash-logo.png').resize(px, px).png().toFile(dir + '/splash_icon.png');
+              const inner = Math.round(px * 0.6);
+              const logo = await sharp('splash/splash-logo.png').resize(inner, inner).toBuffer();
+              await sharp({ create: { width: px, height: px, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+                .composite([{ input: logo, gravity: 'centre' }])
+                .png()
+                .toFile(dir + '/splash_icon.png');
             }
             fs.writeFileSync('android/app/src/main/res/values/ic_launcher_background.xml', '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#FFFDF9</color></resources>');
           })();
