@@ -25,14 +25,16 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android sharp
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
-          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'}});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           cat > android/app/src/main/res/values/styles.xml <<'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-            <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+            <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
               <item name="android:statusBarColor">#0b1220</item>
               <item name="android:navigationBarColor">#0b1220</item>
               <item name="android:windowBackground">#0b1220</item>
+              <item name="android:windowLightStatusBar">false</item>
+              <item name="android:windowLightNavigationBar">false</item>
             </style>
             <style name="AppTheme.NoActionBar" parent="AppTheme">
               <item name="windowActionBar">false</item>
