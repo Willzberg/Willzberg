@@ -22,10 +22,10 @@ jobs:
       - name: Create Android project
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android sharp
+                    npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/splash-screen sharp
           npx cap init "Kato's Garage" ug.katosgarage.app --web-dir www
           npx cap add android
-          node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+                    node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'},SplashScreen:{launchAutoHide:false}});c.android=Object.assign({},c.android,{adjustMarginsForEdgeToEdge:'force'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           cat > android/app/src/main/res/values/styles.xml <<'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
