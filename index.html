@@ -12,8 +12,8 @@ html.kk-pre,html.kk-fade{background:#0A1422}
 html.kk-pre{overflow:hidden}
 html.kk-js body{transition:opacity .6s ease}
 html.kk-pre body{opacity:0}
-html.kk-pre::after{content:"";position:fixed;left:50%;top:calc(var(--kkh,100vh)/2);width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:3px solid rgba(255,90,31,.22);border-top-color:#FF5A1F;animation:kkspin .8s linear infinite;z-index:9999}  @keyframes kkin{to{opacity:1}}
-/* nothing animates behind the cover: hero text, progress bar and shine start together on reveal */
+html.kk-pre::after{content:"";position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:3px solid rgba(255,90,31,.22);border-top-color:#FF5A1F;opacity:0;animation:kkspin .8s linear infinite;z-index:9999}/* nothing animates behind the cover: hero text, progress bar and shine start together on reveal */
+  html.kk-pre.kk-sp::after{opacity:1}
 html.kk-pre .cv-a,html.kk-pre .cv-p i,html.kk-pre .cv-b::after,html.kk-pre .hg>div>*{animation-play-state:paused!important}
 html.kk-pre .rv{transition:none!important}
 /* images fade in once decoded instead of popping in blank */
@@ -24,8 +24,7 @@ html.kk-js img.kk-w.kk-l{animation:kkfade .45s ease}
 <script id="kk-pre-js">
 (function(){
 var d=document,h=d.documentElement,shown=0;
-  h.style.setProperty('--kkh',(screen.height||window.innerHeight)+'px');
-h.classList.add('kk-js','kk-pre');
+(function chk(){var v=window.innerHeight+'x'+h.clientHeight;if(chk.l===v){chk.n=(chk.n||0)+1}else{chk.n=0;chk.l=v}if(chk.n>=10){h.classList.add('kk-sp');return}if(!shown)setTimeout(chk,50)})();h.classList.add('kk-js','kk-pre');
 /* ---- reveal ---- */
 function show(){
   if(shown)return;shown=1;
