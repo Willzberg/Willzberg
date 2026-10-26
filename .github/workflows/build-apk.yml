@@ -27,8 +27,9 @@ jobs:
           npx cap add android
           node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.plugins=Object.assign({},c.plugins,{SystemBars:{style:'DARK'},StatusBar:{style:'DARK'}});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           sed -i 's/Theme.AppCompat.DayNight.NoActionBar/Theme.AppCompat.NoActionBar/g' android/app/src/main/res/values/styles.xml
-                    node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.android=Object.assign({},c.android,{backgroundColor:'#0b1220'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
+                  node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('capacitor.config.json'));c.backgroundColor='#0b1220';c.android=Object.assign({},c.android,{backgroundColor:'#0b1220'});fs.writeFileSync('capacitor.config.json',JSON.stringify(c,null,2))"
           sed -i 's|<style name="AppTheme.NoActionBarLaunch" parent="\([^"]*\)">|&<item name="windowSplashScreenBackground">#0b1220</item><item name="android:windowBackground">@android:color/transparent</item>|' android/app/src/main/res/values/styles.xml
+          sed -i 's|<style name="AppTheme[A-Za-z.]*"[^>]*>|&<item name="android:statusBarColor">#0b1220</item><item name="android:navigationBarColor">#0b1220</item>|' android/app/src/main/res/values/styles.xml
           cat > make-icons.js <<'EOF'
           const sharp = require('sharp');
           const fs = require('fs');
