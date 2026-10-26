@@ -1,0 +1,36 @@
+name: Make web icons
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resize icons
+        run: |
+          npm install sharp
+          cat > resize.js <<'EOF'
+          const sharp = require('sharp');
+          (async () => {
+            const src = 'icons/app-icon.png';
+            await sharp(src).resize(192, 192).png().toFile('icons/icon-192.png');
+            await sharp(src).resize(512, 512).png().toFile('icons/icon-512.png');
+            await sharp(src).resize(192, 192).png().toFile('icons/icon-maskable-192.png');
+            await sharp(src).resize(512, 512).png().toFile('icons/icon-maskable-512.png');
+            await sharp(src).resize(256, 256).png().toFile('icons/favicon.png');
+          })();
+          EOF
+          node resize.js
+          rm resize.js
+      - name: Commit icons
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add icons
+          git commit -m "Update icons" || echo "No changes"
+          git push
